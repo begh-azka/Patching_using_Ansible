@@ -1,0 +1,33 @@
+---
+- name: Patch Test on Servers
+  hosts: test2
+  tasks:
+    - name: Update Cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 86400 # 1 day
+
+    - name: List all the Upgradable Packages via apt list --upgradable
+      shell: apt list --upgradable | grep -v "Listing" | awk -F " " '{print $1 ":" $2}'
+      register: list1
+
+    - name: Print the list
+      debug:
+        msg: "{{ list1.stdout_lines }}"
+
+    - name: List all the Upgradable Packages via apt-get -s dist-upgrade
+      shell: apt-get -s dist-upgrade | grep "Inst" | awk -F " " '{print $2}'
+      register: list2
+
+    - name: Print the list
+      debug:
+        msg: "{{ list2.stdout_lines }}"
+        
+# Install All the Packages
+    - name: Install Packages listed above
+      shell: apt-get -s dist-upgrade | grep "Inst" | awk -F " " '{print $2}' | xargs apt install
+      register: packages
+
+    - name: Print the installed Packages
+      debug:
+         msg: "{{ packages.stdout_lines }}"

@@ -22,3 +22,11 @@
     - name: Print the list
       debug:
         msg: "{{ list2.stdout_lines }}"
+        
+    - name: List all the Packages in need of Security Updates via apt-get -s dist-upgrade
+      shell: apt-get -s dist-upgrade | grep "Inst" | grep "Security" | awk -F " " '{print $2}'
+      register: list3
+
+    - name: Print the list
+      debug:
+        msg: "{{ list3.stdout_lines }}"

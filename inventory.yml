@@ -4,7 +4,6 @@ all:
     patch_test:
   vars:
     ansible_ssh_private_key_file: server-key.pem
-  vars:
     ansible_user: ubuntu
     
 patch_test:
